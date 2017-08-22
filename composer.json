@@ -2,6 +2,7 @@
     "name": "panda-madness/shopping-cart",
     "description": "A simple shopping cart helper extension",
     "type": "bolt-extension",
+    "version": "0.1.0",
     "keywords": [
     ],
     "require": {
