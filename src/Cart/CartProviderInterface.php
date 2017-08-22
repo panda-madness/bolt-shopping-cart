@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: margulan
- * Date: 8/22/17
- * Time: 19:31
- */
 
 namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
 
 
 interface CartProviderInterface
 {
-
+    public function get($contenttype = null);
+    public function add($contenttype, $id, $quantity = 1);
+    public function remove($contenttype, $id);
+    public function update($contenttype, $id, $quantity);
+    public function reset();
 }
