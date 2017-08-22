@@ -12,8 +12,6 @@ class CartController extends Base {
 
     protected function addRoutes(ControllerCollection $c)
     {
-        $c->match('/', [$this, 'show'])
-            ->method('GET');
         $c->match('/add', [$this, 'add'])
             ->method('POST');
         $c->match('/remove', [$this, 'remove'])
@@ -22,11 +20,6 @@ class CartController extends Base {
             ->method('POST');
         $c->match('/reset', [$this, 'reset'])
             ->method('POST');
-    }
-
-    public function show()
-    {
-        return new Response(dump($this->app['cart']->fetch('articles')));
     }
 
     public function add(Request $request)
