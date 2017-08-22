@@ -1,5 +1,5 @@
 {
-    "name": "panda-madness/shopping-cart",
+    "name": "pandamadness/shoppingcart",
     "description": "A simple shopping cart helper extension",
     "type": "bolt-extension",
     "version": "0.1.0",
