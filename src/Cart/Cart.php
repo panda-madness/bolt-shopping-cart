@@ -31,11 +31,19 @@ class Cart {
         if(empty($contenttype)) {
             foreach ($contents as $contenttype => $value) {
                 $ids = array_keys($value);
-                $items[$contenttype] = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
+                $fetched = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
+                $fetched = is_array($fetched) ? $fetched : [$fetched];
+                foreach ($fetched as $item) {
+                    $data['content'] = $item;
+                    $data['quantity'] = $value[$item['id']];
+
+                    $items[] = $data;
+                }
             }
         } else {
             $ids = array_keys($contents);
-            $items = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
+            $items['content'] = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
+            $items['quantity'] = $contents[$items['content']['id']];
         }
 
         return $items;

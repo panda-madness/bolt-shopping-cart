@@ -79,7 +79,7 @@ class ShoppingCartExtension extends SimpleExtension
     protected function registerTwigFunctions()
     {
         return [
-            'fetch_cart' => [$this, 'fetchCart']
+            'fetch_cart' => 'fetchCart'
         ];
     }
 
