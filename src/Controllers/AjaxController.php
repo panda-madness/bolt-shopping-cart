@@ -5,10 +5,11 @@ namespace Bolt\Extension\PandaMadness\ShoppingCart\Controllers;
 
 use Bolt\Controller\Base;
 use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CartController extends Base {
+class AjaxController extends Base {
 
     protected function addRoutes(ControllerCollection $c)
     {
@@ -20,6 +21,8 @@ class CartController extends Base {
             ->method('POST');
         $c->match('/reset', [$this, 'reset'])
             ->method('POST');
+        $c->match('/fetch', [$this, 'fetch'])
+            ->method('get');
     }
 
     public function add(Request $request)
@@ -30,9 +33,7 @@ class CartController extends Base {
 
         $this->app['cart']->add($contenttype, $id, $quantity);
 
-        $this->setFlash('cart_added');
-
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_added'));
+        return new JsonResponse(['response' => 200]);
     }
 
     public function remove(Request $request)
@@ -42,9 +43,7 @@ class CartController extends Base {
 
         $this->app['cart']->remove($contenttype, $id);
 
-        $this->setFlash('cart_removed');
-
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_removed'));
+        return new JsonResponse(['response' => 200]);
     }
 
     public function update(Request $request)
@@ -55,23 +54,20 @@ class CartController extends Base {
 
         $this->app['cart']->update($contenttype, $id, $quantity);
 
-        $this->setFlash('cart_updated');
-
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_updated'));
+        return new JsonResponse(['response' => 200]);
     }
 
     public function reset()
     {
         $this->app['cart']->reset();
 
-        $this->setFlash('cart_reset');
-
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_reset'));
+        return new JsonResponse(['response' => 200]);
     }
 
-    private function setFlash($key, $value = true) {
-        $flashbag = $this->session()->getFlashBag();
+    public function fetch()
+    {
+        $cart = $this->app['cart']->fetch();
 
-        $flashbag->set($key, $value);
+        return new JsonResponse(['response' => 200, 'contents' => $cart]);
     }
 }

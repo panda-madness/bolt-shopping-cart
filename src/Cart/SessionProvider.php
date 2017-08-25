@@ -31,9 +31,9 @@ class SessionProvider implements CartProviderInterface {
 
         if(empty($contenttype)) {
             return $contents;
-        } else {
-            return isset($contents[$contenttype]) ? $contents[$contenttype] : [];
         }
+
+        return isset($contents[$contenttype]) ? [$contents[$contenttype]] : [];
     }
 
     public function add($contenttype, $id, $quantity = 1)

@@ -2,7 +2,7 @@
 
 namespace Bolt\Extension\PandaMadness\ShoppingCart;
 
-use Bolt\Extension\PandaMadness\ShoppingCart\Cart\Cart;
+use Bolt\Extension\PandaMadness\ShoppingCart\Cart\CartService;
 use Bolt\Extension\PandaMadness\ShoppingCart\Cart\CartProviderInterface;
 use Bolt\Extension\PandaMadness\ShoppingCart\Cart\DatabaseProvider;
 use Bolt\Extension\PandaMadness\ShoppingCart\Cart\SessionProvider;
@@ -44,7 +44,7 @@ class ShoppingCartExtension extends SimpleExtension
                         break;
                 }
 
-                return new Cart($provider, $app['storage']);
+                return new CartService($provider, $app['storage']);
             }
         );
 
@@ -69,10 +69,12 @@ class ShoppingCartExtension extends SimpleExtension
 
     protected function registerFrontendControllers()
     {
-        $root = $this->getContainer()['cart.config']->getPathRoot();
+        $app = $this->getContainer();
+        $root = $app['cart.config']->getPathRoot();
 
         return [
-            $root => new Controllers\CartController()
+            $root => new Controllers\CartController(),
+            $root . '/api' => new Controllers\AjaxController(),
         ];
     }
 
@@ -85,6 +87,8 @@ class ShoppingCartExtension extends SimpleExtension
 
     public function fetchCart($contenttype = null)
     {
+        $app = $this->getContainer();
 
+        return $app['cart']->fetch($contenttype);
     }
 }

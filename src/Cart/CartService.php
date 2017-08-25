@@ -5,11 +5,13 @@ namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
 
 use Bolt\Storage\EntityManager;
 
-class Cart {
+class CartService {
 
     protected $provider;
 
     protected $storage;
+
+    protected $cart;
 
     /**
      * Cart constructor.
@@ -20,44 +22,12 @@ class Cart {
     {
         $this->provider = $provider;
         $this->storage = $storage;
+        $this->cart = new Cart($this->get(), $storage);
     }
 
     public function fetch($contenttype = null)
     {
-        $contents = $this->get($contenttype);
-
-        $items = [];
-        $data = [];
-
-        foreach ($contents as $contenttype => $value) {
-            $ids = array_keys($value);
-            $fetched = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
-        }
-
-        if(empty($contenttype)) {
-            foreach ($contents as $contenttype => $value) {
-                $ids = array_keys($value);
-                $fetched = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
-                dump(implode(' || ', $ids));
-                die();
-                $fetched = is_array($fetched) ? $fetched : [$fetched];
-                foreach ($fetched as $item) {
-                    $data['content'] = $item;
-
-                    $data['quantity'] = $value[$item['id']];
-
-                    $items[] = $data;
-                }
-            }
-
-            return $items;
-        }
-
-        $ids = array_keys($contents);
-        $items['content'] = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
-        $items['quantity'] = $contents[$items['content']['id']];
-
-        return $items;
+        return $this->cart->fetch($contenttype);
     }
 
     public function get($contenttype = null)
