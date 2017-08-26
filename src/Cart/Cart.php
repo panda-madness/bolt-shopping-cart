@@ -20,6 +20,7 @@ class Cart {
     /**
      * Cart constructor.
      * @param array $contents
+     * @param \Bolt\Storage\EntityManager $storage
      */
     public function __construct(array $contents, EntityManager $storage)
     {
