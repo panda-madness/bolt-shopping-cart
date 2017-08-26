@@ -42,7 +42,15 @@ class Cart {
 
         $result = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
 
-        return is_array($result) ? $result : [$result];
+        $result = is_array($result) ? $result : [$result['id'] => $result];
+
+        foreach ($this->contents[$contenttype] as $id => $quantity) {
+            $arr['quantity'] = $quantity;
+            $arr['content'] = $result[$id];
+            $result[$id] = $arr;
+        }
+
+        return $result;
     }
 
     public function fetchAllContenttypes()
