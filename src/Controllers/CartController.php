@@ -32,7 +32,7 @@ class CartController extends Base {
 
         $this->setFlash('cart_added');
 
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_added'));
+        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_added'));
     }
 
     public function remove(Request $request)
@@ -44,7 +44,7 @@ class CartController extends Base {
 
         $this->setFlash('cart_removed');
 
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_removed'));
+        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_removed'));
     }
 
     public function update(Request $request)
@@ -57,7 +57,7 @@ class CartController extends Base {
 
         $this->setFlash('cart_updated');
 
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_updated'));
+        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_updated'));
     }
 
     public function reset()
@@ -66,7 +66,7 @@ class CartController extends Base {
 
         $this->setFlash('cart_reset');
 
-        return $this->redirect($this->app['cart.config']->getRedirectUrl('cart_reset'));
+        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_reset'));
     }
 
     private function setFlash($key, $value = true) {

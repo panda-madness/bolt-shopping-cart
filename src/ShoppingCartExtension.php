@@ -23,10 +23,19 @@ class ShoppingCartExtension extends SimpleExtension
             'provider' => 'session',
             'url' => '/cart',
             'redirects' => [
-                'cart_added' => '/cart',
-                'cart_removed' => '/cart',
-                'cart_updated' => '/cart',
-                'cart_reset' => '/cart',
+                'urls' => [
+                    'cart_added' => '/cart',
+                    'cart_removed' => '/cart',
+                    'cart_updated' => '/cart',
+                    'cart_reset' => '/cart',
+                ],
+
+                'routes' => [
+                    'cart_added' => 'cart',
+                    'cart_removed' => 'cart',
+                    'cart_updated' => 'cart',
+                    'cart_reset' => 'cart',
+                ]
             ]
         ];
     }

@@ -41,6 +41,11 @@ class Config {
      */
     public function getRedirectUrl($key)
     {
-        return $this->config['redirects'][$key];
+        return $this->config['redirects']['urls'][$key];
+    }
+
+    public function getRedirectRoute($key)
+    {
+        return $this->config['redirects']['routes'][$key];
     }
 }
