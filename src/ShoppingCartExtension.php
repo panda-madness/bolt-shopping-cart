@@ -44,7 +44,7 @@ class ShoppingCartExtension extends SimpleExtension
                         break;
                 }
 
-                return new CartService($provider, $app['storage']);
+                return new CartService($provider, $app['query']);
             }
         );
 

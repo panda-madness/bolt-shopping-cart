@@ -4,6 +4,7 @@ namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
 
 
 use Bolt\Storage\EntityManager;
+use Bolt\Storage\Query\Query;
 
 class Cart {
 
@@ -15,17 +16,17 @@ class Cart {
     /**
      * @var \Bolt\Storage\EntityManager
      */
-    protected $storage;
+    protected $query;
 
     /**
      * Cart constructor.
      * @param array $contents
-     * @param \Bolt\Storage\EntityManager $storage
+     * @param \Bolt\Storage\Query\Query $query
      */
-    public function __construct(array $contents, EntityManager $storage)
+    public function __construct(array $contents, Query $query)
     {
         $this->contents = $contents;
-        $this->storage = $storage;
+        $this->query = $query;
     }
 
     public function getContenttypeIds($contenttype)
@@ -39,16 +40,12 @@ class Cart {
 
     public function fetchContenttype($contenttype)
     {
-        $ids = $this->getContenttypeIds($contenttype);
+        $ids = array_keys($this->contents[$contenttype]);
 
-        $result = $this->storage->getContent($contenttype, ['id' => implode(' || ', $ids)]);
+        $result = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)])->get();
 
-        $result = is_array($result) ? $result : [$result['id'] => $result];
-
-        foreach ($this->contents[$contenttype] as $id => $quantity) {
-            $arr['quantity'] = $quantity;
-            $arr['content'] = $result[$id];
-            $result[$id] = $arr;
+        foreach ($result as $key => $item) {
+            $result[$key]->quantity = $this->contents[$contenttype][$item->id];
         }
 
         return $result;
