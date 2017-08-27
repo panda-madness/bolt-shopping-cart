@@ -57,6 +57,10 @@ class SessionProvider implements CartProviderInterface {
             unset($contents[$contenttype][$id]);
         }
 
+        if(empty($contents[$contenttype])) {
+            unset($contents[$contenttype]);
+        }
+
         return $this->session->set('shopping_cart', $contents);
     }
 
