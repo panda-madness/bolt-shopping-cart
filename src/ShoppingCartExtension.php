@@ -3,9 +3,8 @@
 namespace Bolt\Extension\PandaMadness\ShoppingCart;
 
 use Bolt\Extension\PandaMadness\ShoppingCart\Cart\Manager;
-use Bolt\Extension\PandaMadness\ShoppingCart\Cart\CartProviderInterface;
-use Bolt\Extension\PandaMadness\ShoppingCart\Cart\DatabaseProvider;
-use Bolt\Extension\PandaMadness\ShoppingCart\Cart\SessionProvider;
+use Bolt\Extension\PandaMadness\ShoppingCart\Providers\DatabaseProvider;
+use Bolt\Extension\PandaMadness\ShoppingCart\Providers\SessionProvider;
 use Bolt\Extension\PandaMadness\ShoppingCart\Config\Config;
 use Bolt\Extension\SimpleExtension;
 use Silex\Application;
