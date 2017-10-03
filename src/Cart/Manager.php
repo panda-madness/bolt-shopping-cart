@@ -3,6 +3,7 @@
 namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
 
 
+use Bolt\Extension\PandaMadness\ShoppingCart\Providers\CartProviderInterface;
 use Bolt\Storage\EntityManager;
 use Bolt\Storage\Query\Query;
 
@@ -16,7 +17,7 @@ class Manager {
 
     /**
      * Cart constructor.
-     * @param \Bolt\Extension\PandaMadness\ShoppingCart\Cart\CartProviderInterface $provider
+     * @param \Bolt\Extension\PandaMadness\ShoppingCart\Providers\CartProviderInterface $provider
      * @param \Bolt\Storage\Query\Query $query
      */
     public function __construct(CartProviderInterface $provider, Query $query)
