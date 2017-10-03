@@ -1,6 +1,6 @@
 <?php
 
-namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
+namespace Bolt\Extension\PandaMadness\ShoppingCart\Providers;
 
 
 use Bolt\Storage\EntityManager;
