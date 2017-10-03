@@ -99,6 +99,6 @@ class ShoppingCartExtension extends SimpleExtension
     {
         $app = $this->getContainer();
 
-        return $app['cart.manager']->fetch();
+        return $app['cart.manager']->get();
     }
 }
