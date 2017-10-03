@@ -6,34 +6,29 @@ namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
 use Bolt\Storage\EntityManager;
 use Bolt\Storage\Query\Query;
 
-class CartService {
+class Manager {
 
     protected $provider;
 
-    protected $storage;
-
     protected $cart;
+
+    protected $query;
 
     /**
      * Cart constructor.
      * @param \Bolt\Extension\PandaMadness\ShoppingCart\Cart\CartProviderInterface $provider
-     * @param \Bolt\Storage\EntityManager $storage
+     * @param \Bolt\Storage\Query\Query $query
      */
     public function __construct(CartProviderInterface $provider, Query $query)
     {
         $this->provider = $provider;
         $this->query = $query;
-        $this->cart = new Cart($this->get(), $query);
+        $this->cart = new Cart($this->provider->get(), $query);
     }
 
-    public function fetch($contenttype = null)
+    public function get()
     {
-        return $this->cart->fetch($contenttype);
-    }
-
-    public function get($contenttype = null)
-    {
-        return $this->provider->get($contenttype);
+        return $this->cart;
     }
 
     public function add($contenttype, $id, $quantity = 1)

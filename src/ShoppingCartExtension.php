@@ -2,7 +2,7 @@
 
 namespace Bolt\Extension\PandaMadness\ShoppingCart;
 
-use Bolt\Extension\PandaMadness\ShoppingCart\Cart\CartService;
+use Bolt\Extension\PandaMadness\ShoppingCart\Cart\Manager;
 use Bolt\Extension\PandaMadness\ShoppingCart\Cart\CartProviderInterface;
 use Bolt\Extension\PandaMadness\ShoppingCart\Cart\DatabaseProvider;
 use Bolt\Extension\PandaMadness\ShoppingCart\Cart\SessionProvider;
@@ -42,7 +42,7 @@ class ShoppingCartExtension extends SimpleExtension
 
     protected function registerServices(Application $app)
     {
-        $app['cart'] = $app->share(
+        $app['cart.manager'] = $app->share(
             function ($app) {
                 switch ($this->getConfig()['provider']) {
                     case 'session':
@@ -51,9 +51,11 @@ class ShoppingCartExtension extends SimpleExtension
                     case 'database':
                         $provider = new DatabaseProvider($app['storage']);
                         break;
+                    default:
+                        throw new \UnexpectedValueException("Provider not found");
                 }
 
-                return new CartService($provider, $app['query']);
+                return new Manager($provider, $app['query']);
             }
         );
 
@@ -94,10 +96,10 @@ class ShoppingCartExtension extends SimpleExtension
         ];
     }
 
-    public function fetchCart($contenttype = null)
+    public function fetchCart()
     {
         $app = $this->getContainer();
 
-        return $app['cart']->fetch($contenttype);
+        return $app['cart.manager']->fetch();
     }
 }

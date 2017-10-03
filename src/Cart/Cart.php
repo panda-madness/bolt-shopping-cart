@@ -3,7 +3,6 @@
 namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
 
 
-use Bolt\Storage\EntityManager;
 use Bolt\Storage\Query\Query;
 
 class Cart {
@@ -29,46 +28,16 @@ class Cart {
         $this->query = $query;
     }
 
-    public function getContenttypeIds($contenttype)
+    public function contents()
     {
-        if(isset($this->contents[$contenttype])) {
-            return array_keys($this->contents[$contenttype]);
+        $content = [];
+
+        foreach ($this->contents as $contenttype => $collection) {
+            $ids = array_keys($collection);
+
+            $content[$contenttype] = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)]);
         }
 
-        return [];
-    }
-
-    public function fetchContenttype($contenttype)
-    {
-        $ids = array_keys($this->contents[$contenttype]);
-
-        $result = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)])->get();
-
-        foreach ($result as $key => $item) {
-            $result[$key]->quantity = $this->contents[$contenttype][$item->id];
-        }
-
-        return $result;
-    }
-
-    public function fetchAllContenttypes()
-    {
-        $items = [];
-
-        foreach ($this->contents as $contenttype => $value) {
-
-            $items[$contenttype] = $this->fetchContenttype($contenttype);
-        }
-
-        return $items;
-    }
-
-    public function fetch($contenttype)
-    {
-        if(empty($contenttype)) {
-            return $this->fetchAllContenttypes();
-        }
-
-        return $this->fetchContenttype($contenttype);
+        return $content;
     }
 }

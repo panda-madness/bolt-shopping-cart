@@ -13,13 +13,17 @@ class CartController extends Base {
     protected function addRoutes(ControllerCollection $c)
     {
         $c->match('/add', [$this, 'add'])
-            ->method('POST');
+            ->method('POST')
+            ->bind('cart.add');
         $c->match('/remove', [$this, 'remove'])
-            ->method('POST');
+            ->method('POST')
+            ->bind('cart.remove');
         $c->match('/update', [$this, 'update'])
-            ->method('POST');
+            ->method('POST')
+            ->bind('cart.update');
         $c->match('/reset', [$this, 'reset'])
-            ->method('POST');
+            ->method('POST')
+            ->bind('cart.reset');
     }
 
     public function add(Request $request)
