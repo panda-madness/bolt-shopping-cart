@@ -32,7 +32,7 @@ class CartController extends Base {
         $id = $request->request->get('id');
         $quantity = $request->request->get('quantity', 1);
 
-        $this->app['cart']->add($contenttype, $id, $quantity);
+        $this->app['cart.manager']->add($contenttype, $id, $quantity);
 
         $this->setFlash('cart_added');
 
@@ -44,7 +44,7 @@ class CartController extends Base {
         $contenttype = $request->request->get('contenttype');
         $id = $request->request->get('id');
 
-        $this->app['cart']->remove($contenttype, $id);
+        $this->app['cart.manager']->remove($contenttype, $id);
 
         $this->setFlash('cart_removed');
 
@@ -57,7 +57,7 @@ class CartController extends Base {
         $id = $request->request->get('id');
         $quantity = $request->request->get('quantity');
 
-        $this->app['cart']->update($contenttype, $id, $quantity);
+        $this->app['cart.manager']->update($contenttype, $id, $quantity);
 
         $this->setFlash('cart_updated');
 
@@ -66,7 +66,7 @@ class CartController extends Base {
 
     public function reset()
     {
-        $this->app['cart']->reset();
+        $this->app['cart.manager']->reset();
 
         $this->setFlash('cart_reset');
 
