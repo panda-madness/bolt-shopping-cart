@@ -36,6 +36,10 @@ class Cart {
             $ids = array_keys($collection);
 
             $content[$contenttype] = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)])->get();
+
+            foreach ($content[$contenttype] as $key => $item) {
+                $content[$contenttype][$key]->quantity = $collection[$item->id];
+            }
         }
 
         return $content;
