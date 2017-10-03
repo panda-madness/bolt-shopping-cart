@@ -35,7 +35,7 @@ class Cart {
         foreach ($this->contents as $contenttype => $collection) {
             $ids = array_keys($collection);
 
-            $content[$contenttype] = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)]);
+            $content[$contenttype] = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)])->get();
         }
 
         return $content;
