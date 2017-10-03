@@ -38,7 +38,7 @@ class Cart {
             $content[$contenttype] = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)])->get();
 
             foreach ($content[$contenttype] as $key => $item) {
-                $content[$contenttype][$key]->quantity = $collection[$item->id];
+                $content[$contenttype][$key]->set('quantity', $collection[$item->id]);
             }
         }
 
