@@ -49,9 +49,23 @@ class Cart {
     {
         $price = 0;
         foreach ($this->contents() as $contenttype) {
-            array_walk($contenttype, function ($el) use($price) { $price += ($el->price * $el->quantity); });
+            foreach ($contenttype as $product) {
+                $price += $product->price * $product->quantity;
+            }
         }
 
         return $price;
+    }
+
+    public function totalQuantity()
+    {
+        $quantity = 0;
+        foreach ($this->contents as $contenttype) {
+            foreach ($contenttype as $product) {
+                $quantity++;
+            }
+        }
+
+        return $quantity;
     }
 }
