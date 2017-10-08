@@ -44,4 +44,14 @@ class Cart {
 
         return $content;
     }
+
+    public function totalPrice()
+    {
+        $price = 0;
+        foreach ($this->contents() as $contenttype) {
+            array_walk($contenttype, function ($el) use($price) { $price += ($el->price * $el->quantity); });
+        }
+
+        return $price;
+    }
 }
