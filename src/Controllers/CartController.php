@@ -5,13 +5,16 @@ namespace Bolt\Extension\PandaMadness\ShoppingCart\Controllers;
 
 use Bolt\Controller\Base;
 use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CartController extends Base {
 
     protected function addRoutes(ControllerCollection $c)
     {
+        $c->match('/', [$this, 'show'])
+            ->method('GET')
+            ->bind('cart.show');
         $c->match('/add', [$this, 'add'])
             ->method('POST')
             ->bind('cart.add');
@@ -26,6 +29,11 @@ class CartController extends Base {
             ->bind('cart.reset');
     }
 
+    public function show(Request $request)
+    {
+        return new JsonResponse($this->app['cart.manager']->get()->contents());
+    }
+
     public function add(Request $request)
     {
         $contenttype = $request->request->get('contenttype');
@@ -34,9 +42,14 @@ class CartController extends Base {
 
         $this->app['cart.manager']->add($contenttype, $id, $quantity);
 
-        $this->setFlash('cart_added');
+        if($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'status' => 'success'
+            ]);
+        }
 
-        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_added'));
+        $this->setFlash('cart_added');
+        return $this->redirect($this->app['cart.config']->getRedirectUrl('add'));
     }
 
     public function remove(Request $request)
@@ -46,9 +59,14 @@ class CartController extends Base {
 
         $this->app['cart.manager']->remove($contenttype, $id);
 
-        $this->setFlash('cart_removed');
+        if($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'status' => 'success'
+            ]);
+        }
 
-        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_removed'));
+        $this->setFlash('cart_removed');
+        return $this->redirect($this->app['cart.config']->getRedirectUrl('remove'));
     }
 
     public function update(Request $request)
@@ -59,23 +77,32 @@ class CartController extends Base {
 
         $this->app['cart.manager']->update($contenttype, $id, $quantity);
 
-        $this->setFlash('cart_updated');
+        if($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'status' => 'success'
+            ]);
+        }
 
-        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_updated'));
+        $this->setFlash('cart_updated');
+        return $this->redirect($this->app['cart.config']->getRedirectUrl('update'));
     }
 
-    public function reset()
+    public function reset(Request $request)
     {
         $this->app['cart.manager']->reset();
 
         $this->setFlash('cart_reset');
 
-        return $this->redirectToRoute($this->app['cart.config']->getRedirectRoute('cart_reset'));
+        if($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'status' => 'success'
+            ]);
+        }
+
+        return $this->redirect($this->app['cart.config']->getRedirectUrl('reset'));
     }
 
     private function setFlash($key, $value = true) {
-        $flashbag = $this->session()->getFlashBag();
-
-        $flashbag->set($key, $value);
+        $this->session()->getFlashBag()->set($key, $value);
     }
 }

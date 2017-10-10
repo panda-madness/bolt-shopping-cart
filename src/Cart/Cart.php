@@ -31,7 +31,6 @@ class Cart {
     public function contents()
     {
         $content = [];
-
         foreach ($this->contents as $contenttype => $collection) {
             $ids = array_keys($collection);
 

@@ -25,14 +25,9 @@ class Config {
         return $this->config['provider'];
     }
 
-    public function getPathRoot()
+    public function getRoot()
     {
-        return $this->config['url'];
-    }
-
-    public function getContenttypes()
-    {
-        return $this->config['contenttypes'];
+        return $this->config['root'];
     }
 
     /**
@@ -41,11 +36,11 @@ class Config {
      */
     public function getRedirectUrl($key)
     {
-        return $this->config['redirects']['urls'][$key];
+        return $this->config['redirects'][$key];
     }
 
-    public function getRedirectRoute($key)
+    public function getSessionKey()
     {
-        return $this->config['redirects']['routes'][$key];
+        return (string)$this->config['session']['key'];
     }
 }

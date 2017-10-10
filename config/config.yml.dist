@@ -1,7 +1,11 @@
 provider: session
-url: /cart
+root: /cart
+
+session:
+    key: shopping_cart
+
 redirects:
-    cart_added: /cart
-    cart_removed: /cart
-    cart_updated: /cart
-    cart_reset: /cart
+    add: /cart
+    remove: /cart
+    update: /cart
+    reset: /cart
