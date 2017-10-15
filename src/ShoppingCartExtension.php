@@ -16,36 +16,19 @@ use Silex\Application;
  */
 class ShoppingCartExtension extends SimpleExtension
 {
-    protected function getDefaultConfig()
-    {
-        return [
-            'provider' => 'session',
-            'url' => '/cart',
-            'redirects' => [
-                'urls' => [
-                    'cart_added' => '/cart',
-                    'cart_removed' => '/cart',
-                    'cart_updated' => '/cart',
-                    'cart_reset' => '/cart',
-                ],
-
-                'routes' => [
-                    'cart_added' => 'cart',
-                    'cart_removed' => 'cart',
-                    'cart_updated' => 'cart',
-                    'cart_reset' => 'cart',
-                ]
-            ]
-        ];
-    }
-
     protected function registerServices(Application $app)
     {
+        $app['cart.config'] = $app->share(
+            function ($app) {
+                return new Config($this->getConfig());
+            }
+        );
+
         $app['cart.manager'] = $app->share(
             function ($app) {
                 switch ($this->getConfig()['provider']) {
                     case 'session':
-                        $provider = new SessionProvider($app['session']);
+                        $provider = new SessionProvider($app['session'], $this->getConfig()['session']['key']);
                         break;
                     case 'database':
                         $provider = new DatabaseProvider($app['storage']);
@@ -60,7 +43,7 @@ class ShoppingCartExtension extends SimpleExtension
 
         $app['cart.providers.session'] = $app->share(
             function ($app) {
-                return new SessionProvider($app['session']);
+                return new SessionProvider($app['session'], $this->getConfig()['session']['key']);
             }
         );
 
@@ -69,22 +52,15 @@ class ShoppingCartExtension extends SimpleExtension
                 return new DatabaseProvider($app['storage']);
             }
         );
-
-        $app['cart.config'] = $app->share(
-            function ($app) {
-                return new Config($this->getConfig());
-            }
-        );
     }
 
     protected function registerFrontendControllers()
     {
         $app = $this->getContainer();
-        $root = $app['cart.config']->getPathRoot();
+        $root = $app['cart.config']->getRoot();
 
         return [
-            $root => new Controllers\CartController(),
-            $root . '/api' => new Controllers\AjaxController(),
+            $root => new Controllers\CartController()
         ];
     }
 

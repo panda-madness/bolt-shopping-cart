@@ -9,25 +9,26 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class SessionProvider implements CartProviderInterface {
 
     protected $session;
-    protected $config;
+    protected $key;
 
     /**
      * SessionProvider constructor.
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
 
      */
-    public function __construct(Session $session)
+    public function __construct(Session $session, string $key)
     {
         $this->session = $session;
+        $this->key = $key;
 
-        if(!$this->session->has('shopping_cart')) {
-            $this->session->set('shopping_cart', []);
+        if(!$this->session->has($this->key)) {
+            $this->session->set($this->key, []);
         }
     }
 
     public function get($contenttype = null)
     {
-        $contents = $this->session->get('shopping_cart');
+        $contents = $this->session->get($this->key);
 
         if(empty($contenttype)) {
             return $contents;
@@ -38,7 +39,7 @@ class SessionProvider implements CartProviderInterface {
 
     public function add($contenttype, $id, $quantity = 1)
     {
-        $contents = $this->session->get('shopping_cart');
+        $contents = $this->session->get($this->key);
 
         if(isset($contents[$contenttype][$id])) {
             $contents[$contenttype][$id] += $quantity;
@@ -46,12 +47,12 @@ class SessionProvider implements CartProviderInterface {
             $contents[$contenttype][$id] = $quantity;
         }
 
-        return $this->session->set('shopping_cart', $contents);
+        return $this->session->set($this->key, $contents);
     }
 
     public function remove($contenttype, $id)
     {
-        $contents = $this->session->get('shopping_cart');
+        $contents = $this->session->get($this->key);
 
         if(isset($contents[$contenttype][$id])) {
             unset($contents[$contenttype][$id]);
@@ -61,12 +62,12 @@ class SessionProvider implements CartProviderInterface {
             unset($contents[$contenttype]);
         }
 
-        return $this->session->set('shopping_cart', $contents);
+        return $this->session->set($this->key, $contents);
     }
 
     public function update($contenttype, $id, $quantity)
     {
-        $contents = $this->session->get('shopping_cart');
+        $contents = $this->session->get($this->key);
 
         if(isset($contents[$contenttype][$id])) {
             $contents[$contenttype][$id] = $quantity;
@@ -74,11 +75,11 @@ class SessionProvider implements CartProviderInterface {
             $contents[$contenttype][$id] = 1;
         }
 
-        return $this->session->set('shopping_cart', $contents);
+        return $this->session->set($this->key, $contents);
     }
 
     public function reset()
     {
-        $this->session->set('shopping_cart', []);
+        $this->session->set($this->key, []);
     }
 }

@@ -31,7 +31,6 @@ class Cart {
     public function contents()
     {
         $content = [];
-
         foreach ($this->contents as $contenttype => $collection) {
             $ids = array_keys($collection);
 
@@ -43,29 +42,5 @@ class Cart {
         }
 
         return $content;
-    }
-
-    public function totalPrice()
-    {
-        $price = 0;
-        foreach ($this->contents() as $contenttype) {
-            foreach ($contenttype as $product) {
-                $price += $product->price * $product->quantity;
-            }
-        }
-
-        return $price;
-    }
-
-    public function totalQuantity()
-    {
-        $quantity = 0;
-        foreach ($this->contents as $contenttype) {
-            foreach ($contenttype as $product) {
-                $quantity++;
-            }
-        }
-
-        return $quantity;
     }
 }
