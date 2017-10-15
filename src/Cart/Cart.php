@@ -10,7 +10,7 @@ class Cart {
     /**
      * @var array $contents
      */
-    protected $contents;
+    public $contents;
 
     /**
      * @var \Bolt\Storage\EntityManager
