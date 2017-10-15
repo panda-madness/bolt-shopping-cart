@@ -3,6 +3,7 @@
 namespace Bolt\Extension\PandaMadness\ShoppingCart\Cart;
 
 
+use Bolt\Collection\Bag;
 use Bolt\Storage\Query\Query;
 
 class Cart {
@@ -24,23 +25,41 @@ class Cart {
      */
     public function __construct(array $contents, Query $query)
     {
-        $this->contents = $contents;
+        $this->contents = Bag::from($contents);
         $this->query = $query;
     }
 
-    public function contents()
+    public function get()
     {
-        $content = [];
-        foreach ($this->contents as $contenttype => $collection) {
-            $ids = array_keys($collection);
+        $sorted = [];
 
-            $content[$contenttype] = $this->query->getContent($contenttype, ['id' => implode(' || ', $ids)])->get();
+        foreach ($this->contents as $item) {
+            $arr['id'] = $item['id'];
+            $arr['quantity'] = $item['quantity'];
+            $sorted[$item['contenttype']][] = $arr;
+        }
 
-            foreach ($content[$contenttype] as $key => $item) {
-                $content[$contenttype][$key]->set('quantity', $collection[$item->id]);
+        $final = [];
+
+        foreach ($sorted as $ct => $items) {
+            $ids = [];
+
+            foreach ($items as $item) {
+                $ids[] = $item['id'];
+            }
+
+            $result = $this->query->getContent($ct, ['id' => implode(' || ', $ids)])->get();
+
+            foreach ($items as $item) {
+                foreach ($result as $content) {
+                    if($content->id === $item['id']) {
+                        $final[$ct][$content->id]['item'] = $content;
+                        $final[$ct][$content->id]['quantity'] = $item['quantity'];
+                    }
+                }
             }
         }
 
-        return $content;
+        return $final;
     }
 }

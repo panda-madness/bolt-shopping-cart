@@ -12,7 +12,7 @@ class CartController extends Base {
 
     protected function addRoutes(ControllerCollection $c)
     {
-        $c->match('/', [$this, 'show'])
+        $c->match('/get', [$this, 'get'])
             ->method('GET')
             ->bind('cart.show');
         $c->match('/add', [$this, 'add'])
@@ -29,7 +29,7 @@ class CartController extends Base {
             ->bind('cart.reset');
     }
 
-    public function show(Request $request)
+    public function get(Request $request)
     {
         return new JsonResponse($this->app['cart.manager']->get()->contents());
     }

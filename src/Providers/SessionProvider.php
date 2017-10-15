@@ -3,18 +3,20 @@
 namespace Bolt\Extension\PandaMadness\ShoppingCart\Providers;
 
 
-use Bolt\Extension\PandaMadness\ShoppingCart\Config\Config;
+use Bolt\Collection\Bag;
+use Bolt\Collection\MutableBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class SessionProvider implements CartProviderInterface {
 
     protected $session;
     protected $key;
+    protected $contents;
 
     /**
      * SessionProvider constructor.
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
-
+     * @param string $key
      */
     public function __construct(Session $session, string $key)
     {
@@ -24,62 +26,73 @@ class SessionProvider implements CartProviderInterface {
         if(!$this->session->has($this->key)) {
             $this->session->set($this->key, []);
         }
+
+        $this->contents = MutableBag::from($this->session->get($this->key));
     }
 
-    public function get($contenttype = null)
+    public function get(string $contenttype = null)
     {
-        $contents = $this->session->get($this->key);
-
         if(empty($contenttype)) {
-            return $contents;
+            return $this->contents->toArray();
         }
 
-        return isset($contents[$contenttype]) ? [$contents[$contenttype]] : [];
+        return $this->contents->get($contenttype, []);
     }
 
-    public function add($contenttype, $id, $quantity = 1)
+    public function add(string $contenttype, int $id, int $quantity = 1)
     {
-        $contents = $this->session->get($this->key);
-
-        if(isset($contents[$contenttype][$id])) {
-            $contents[$contenttype][$id] += $quantity;
-        } else {
-            $contents[$contenttype][$id] = $quantity;
+        foreach ($this->contents as $key => $item) {
+            if($item['contenttype'] === $contenttype && $item['id'] === $id) {
+                $item['quantity'] += $quantity;
+                $this->contents->set($key, $item);
+                return $this->save();
+            }
         }
 
-        return $this->session->set($this->key, $contents);
+        $this->contents->add([
+            'contenttype' => $contenttype,
+            'id' => $id,
+            'quantity' => $quantity,
+        ]);
+
+        return $this->save();
     }
 
-    public function remove($contenttype, $id)
+    public function remove(string $contenttype, int $id)
     {
-        $contents = $this->session->get($this->key);
-
-        if(isset($contents[$contenttype][$id])) {
-            unset($contents[$contenttype][$id]);
+        foreach ($this->contents as $key => $item) {
+            if($item['contenttype'] === $contenttype && $item['id'] === $id) {
+                $this->contents->remove($key);
+                return $this->save();
+            }
         }
 
-        if(empty($contents[$contenttype])) {
-            unset($contents[$contenttype]);
-        }
-
-        return $this->session->set($this->key, $contents);
+        return $this->save();
     }
 
-    public function update($contenttype, $id, $quantity)
+    public function update(string $contenttype, int $id, int $quantity)
     {
-        $contents = $this->session->get($this->key);
-
-        if(isset($contents[$contenttype][$id])) {
-            $contents[$contenttype][$id] = $quantity;
-        } else {
-            $contents[$contenttype][$id] = 1;
+        foreach ($this->contents as $key => $item) {
+            if($item['contenttype'] === $contenttype && $item['id'] === $id) {
+                $item['contenttype'] = $contenttype;
+                $item['id'] = $id;
+                $item['quantity'] = $quantity;
+                $this->contents->set($key, $item);
+                return $this->save();
+            }
         }
 
-        return $this->session->set($this->key, $contents);
+        return $this->save();
     }
 
     public function reset()
     {
-        $this->session->set($this->key, []);
+        $this->contents = [];
+
+        return $this->save();
+    }
+
+    private function save() {
+        return $this->session->set($this->key, $this->contents->toArray());
     }
 }

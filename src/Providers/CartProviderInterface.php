@@ -5,9 +5,9 @@ namespace Bolt\Extension\PandaMadness\ShoppingCart\Providers;
 
 interface CartProviderInterface
 {
-    public function get($contenttype = null);
-    public function add($contenttype, $id, $quantity = 1);
-    public function remove($contenttype, $id);
-    public function update($contenttype, $id, $quantity);
+    public function get(string $contenttype = null);
+    public function add(string $contenttype, int $id, int $quantity = 1);
+    public function remove(string $contenttype, int $id);
+    public function update(string $contenttype, int $id, int $quantity);
     public function reset();
 }
